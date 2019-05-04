@@ -9,8 +9,65 @@ function btnMaker(){
         btnGen.text(topics[i]);
         btnGen.attr("search", topics[i]);
         $("#buttonArea").append(btnGen);
-        $("buttonArea").append("<br>");
     }
 };
+
+//onclick to take input from the user
+$("#submit").on("click", function(event){
+    event.preventDefault();
+    var userBtn = $("#input").val().trim();
+    topics.push(userBtn);
+    btnMaker();
+});
+
+//function to generate gifs from giphy api
+function gifGen(){
+    $("#gif-area").empty();
+    var searchTerm = $(this).attr("search");
+    var query = "https://api.giphy.com/v1/gifs/search?q=" + searchTerm + "&api_key=5PmDPYEfWOkNp9FpuCs03EawwKp4ubJm&limit=10";
+
+    $.ajax({
+        url : query,
+        method: "GET"
+    })
+        .then(function(response){
+            var result = response.data;
+            console.log(result);
+            for(var i = 0; i < result.length; i++){
+                var newGif = $("<div>");
+                newGif.addClass("float-left");
+                var rating = result[i].rating;
+                var ratingText = $("<p>").text("Rating: " + rating);
+                newGif.append(ratingText);
+                var movieGif = $("<img>");
+                movieGif.addClass("gif");
+                movieGif.attr("src", result[i].images.fixed_height_still.url);
+                movieGif.attr("state", "still")
+                movieGif.attr("still", result[i].images.fixed_height_still.url);
+                movieGif.attr("moving", result[i].images.fixed_height.url);
+                newGif.append(movieGif);
+                $("#gif-area").append(newGif);
+            }
+        });
+}
+//function to pause/unpause gifs
+function pauseToggle(){
+    console.log("clicked")
+    var state = $(this).attr("state");
+    if(state === "still"){
+        $(this).attr("state", "moving");
+        $(this).attr("src", $(this).attr("moving"));
+    }
+    else{
+        $(this).attr("state", "still");
+        $(this).attr("src", $(this).attr("still"));
+    }
+};
+
+//onclick for gif search buttons
+$(document).on("click", ".btn-info", gifGen);
+
+//onclick for gifs
+$(document).on("click", ".gif", pauseToggle);
 
 btnMaker();
