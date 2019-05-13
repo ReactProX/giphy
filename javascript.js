@@ -71,3 +71,26 @@ $(document).on("click", ".btn-info", gifGen);
 $(document).on("click", ".gif", pauseToggle);
 
 btnMaker();
+
+var bpm_call = function(song, artist) {
+    // Description: convert name of into name of song, artist, bpm
+  
+    // Inputs:
+    //   Example:
+    
+    // Outputs:
+    //   Example:
+    
+    var query = "https://api.getsongbpm.com/search/?api_key=2a441a2819558dd13072a3f2fd42d9d8&type=both&lookup=song:"+ song + "artist:" + artist
+    $.ajax({
+      url : query,
+      method : "GET"
+    })
+      .then(function(res){
+          var result =  res.search;
+          console.log(result);
+      })
+  }
+  
+  //UNIT TEST
+  bpm_call("enter+sandman", "metallica");
